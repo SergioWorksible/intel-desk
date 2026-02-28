@@ -85,7 +85,8 @@ export function CommandPalette() {
           router.push('/graphs/new')
           break
         case 'export-briefing':
-          // TODO: Trigger export
+          sessionStorage.setItem('briefing-export', 'md')
+          router.push('/briefing')
           break
         case 'search':
           if (searchValue.trim()) {

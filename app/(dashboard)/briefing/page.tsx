@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/lib/store'
@@ -18,13 +18,27 @@ import {
   Pin,
   EyeOff,
   ChevronRight,
+  ChevronDown,
   AlertTriangle,
   BookOpen,
   RefreshCw,
   Calendar,
   ExternalLink,
+  FileText,
+  FileDown,
 } from 'lucide-react'
 import { formatDate, formatRelativeTime, calculateReadingTime, getConfidenceLevel } from '@/lib/utils'
+import {
+  exportBriefingToMarkdown,
+  exportBriefingToPdf,
+  downloadBlob,
+} from '@/lib/briefing-export'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import Link from 'next/link'
 
 interface BriefingItem {
@@ -292,10 +306,54 @@ export default function BriefingPage() {
     visibleItems.map((i) => i.fact + i.why_it_matters).join(' ')
   )
 
-  const handleExport = async (format: 'md' | 'pdf') => {
-    // TODO: Implement export
-    toast({ title: `Exporting as ${format.toUpperCase()}...` })
+  const handleExport = (format: 'md' | 'pdf') => {
+    if (!briefing || visibleItems.length === 0) {
+      toast({
+        title: 'No briefing to export',
+        description: 'Generate or select a briefing first.',
+        variant: 'destructive',
+      })
+      return
+    }
+    const dateFormatted = formatDate(selectedDate, {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    })
+    const slug = selectedDate.replace(/-/g, '')
+    try {
+      if (format === 'md') {
+        const md = exportBriefingToMarkdown(visibleItems, selectedDate, dateFormatted)
+        const blob = new Blob([md], { type: 'text/markdown;charset=utf-8' })
+        downloadBlob(blob, `inteldesk-briefing-${slug}.md`)
+      } else {
+        const blob = exportBriefingToPdf(visibleItems, selectedDate, dateFormatted)
+        downloadBlob(blob, `inteldesk-briefing-${slug}.pdf`)
+      }
+      toast({
+        title: 'Export complete',
+        description: `Briefing exported as ${format.toUpperCase()}`,
+        variant: 'success',
+      })
+    } catch (err) {
+      toast({
+        title: 'Export failed',
+        description: err instanceof Error ? err.message : 'Unknown error',
+        variant: 'destructive',
+      })
+    }
   }
+
+  // Handle export triggered from command palette (Ctrl+K > Export today's briefing)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const format = sessionStorage.getItem('briefing-export') as 'md' | 'pdf' | null
+    if (format && (format === 'md' || format === 'pdf') && briefing && visibleItems.length > 0) {
+      sessionStorage.removeItem('briefing-export')
+      handleExport(format)
+    }
+  }, [briefing, visibleItems.length, selectedDate])
 
   return (
     <div className="space-y-6">
@@ -320,10 +378,25 @@ export default function BriefingPage() {
               {generateMutation.isPending ? 'Generating...' : 'Regenerate'}
             </Button>
           )}
-          <Button variant="outline" onClick={() => handleExport('md')}>
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" disabled={!briefing || visibleItems.length === 0}>
+                <Download className="mr-2 h-4 w-4" />
+                Export
+                <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => handleExport('md')}>
+                <FileText className="mr-2 h-4 w-4" />
+                Markdown
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport('pdf')}>
+                <FileDown className="mr-2 h-4 w-4" />
+                PDF
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
