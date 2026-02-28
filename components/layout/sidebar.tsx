@@ -24,6 +24,7 @@ import {
   MessageSquare,
   Brain,
   Network,
+  Github,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useUIStore, useAuthStore } from '@/lib/store'
@@ -38,6 +39,7 @@ import {
 } from '@/components/ui/tooltip'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { APP_VERSION, GITHUB_REPO_URL } from '@/lib/constants'
 
 const mainNavItems = [
   { href: '/overview', label: 'Overview', icon: LayoutDashboard },
@@ -155,10 +157,20 @@ export function Sidebar({ onMobileClose }: SidebarProps = {} as SidebarProps) {
         {/* Header */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-intel-border px-4">
           {!sidebarCollapsed && (
-            <div className="flex items-center gap-2">
-              <span className="font-classified text-lg tracking-wider text-intel-text">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-classified text-lg tracking-wider text-intel-text shrink-0">
                 INTELDESK
               </span>
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 text-intel-muted hover:text-intel-accent transition-colors shrink-0"
+                title="Ver en GitHub"
+              >
+                <Github className="h-4 w-4" />
+                <span className="text-[10px] font-mono">v{APP_VERSION}</span>
+              </a>
             </div>
           )}
           {sidebarCollapsed && (

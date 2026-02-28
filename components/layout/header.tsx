@@ -1,13 +1,14 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import { Search, Command, Bell, Clock, Menu } from 'lucide-react'
+import { Search, Command, Bell, Clock, Menu, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useUIStore } from '@/lib/store'
 import { useEffect, useState } from 'react'
 import { formatDateTime } from '@/lib/utils'
+import { APP_VERSION, GITHUB_REPO_URL } from '@/lib/constants'
 
 const pageTitles: Record<string, { title: string; classification?: string }> = {
   '/overview': { title: 'Intelligence overview', classification: 'UNCLASSIFIED' },
@@ -117,8 +118,21 @@ export function Header() {
         <Search className="h-5 w-5" />
       </Button>
 
-      {/* Right: Time and alerts */}
+      {/* Right: Version, GitHub, Time and alerts */}
       <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+        {/* Version + GitHub */}
+        <div className="hidden sm:flex items-center gap-2 text-intel-muted">
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 hover:text-intel-accent transition-colors"
+            title="Ver en GitHub"
+          >
+            <Github className="h-4 w-4" />
+            <span className="text-xs font-mono">v{APP_VERSION}</span>
+          </a>
+        </div>
         {/* Current time - Hidden on small mobile */}
         <div className="hidden sm:flex items-center gap-2 text-sm text-intel-muted font-mono">
           <Clock className="h-4 w-4" />

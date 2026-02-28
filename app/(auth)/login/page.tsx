@@ -3,13 +3,14 @@
 import { useState, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
-import { Shield, Mail, Lock, Loader2 } from 'lucide-react'
+import { Shield, Mail, Lock, Loader2, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { createClient } from '@/lib/supabase/client'
+import { APP_VERSION, GITHUB_REPO_URL } from '@/lib/constants'
 
 function LoginForm() {
   const router = useRouter()
@@ -106,7 +107,18 @@ function LoginForm() {
             INTEL DESK
           </CardTitle>
           <CardDescription>
-            Geopolitical Intelligence System
+            <span className="flex flex-col items-center gap-1">
+              <span>Geopolitical Intelligence System</span>
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-intel-muted hover:text-intel-accent transition-colors text-xs mt-1"
+              >
+                <Github className="h-3.5 w-3.5" />
+                <span>v{APP_VERSION}</span>
+              </a>
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -194,7 +206,18 @@ export default function LoginPage() {
               INTEL DESK
             </CardTitle>
             <CardDescription>
-              Geopolitical Intelligence System
+              <span className="flex flex-col items-center gap-1">
+                <span>Geopolitical Intelligence System</span>
+                <a
+                  href={GITHUB_REPO_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-intel-muted hover:text-intel-accent transition-colors text-xs mt-1"
+                >
+                  <Github className="h-3.5 w-3.5" />
+                  <span>v{APP_VERSION}</span>
+                </a>
+              </span>
             </CardDescription>
           </CardHeader>
           <CardContent>
