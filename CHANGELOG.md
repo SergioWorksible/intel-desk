@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-03-01
+
 ### Added
 - OSS landing page at `/` with Hero, nav, CTAs, capabilities grid (briefings, ML clustering, map, markets, hypotheses, alerts), pricing (self-host vs hosted), footer with scroll support
 - Briefing export to Markdown and PDF (dropdown in briefing page, jspdf)
@@ -39,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Market dashboard, world map, country cards
 - Alert system, source management, role-based access (Admin, Analyst, Reader)
 
-[Unreleased]: https://github.com/SergioWorksible/intel-desk/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/SergioWorksible/intel-desk/compare/v1.1.0...HEAD
 [1.0.1]: https://github.com/SergioWorksible/intel-desk/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/SergioWorksible/intel-desk/releases/tag/v1.0.0
+
+[1.1.0]: https://github.com/SergioWorksible/intel-desk/releases/tag/v1.1.0
