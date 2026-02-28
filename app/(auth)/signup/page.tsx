@@ -3,13 +3,14 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Shield, Mail, Lock, User, Loader2 } from 'lucide-react'
+import { Shield, Mail, Lock, User, Loader2, Github } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/components/ui/use-toast'
 import { createClient } from '@/lib/supabase/client'
+import { APP_VERSION, GITHUB_REPO_URL } from '@/lib/constants'
 
 export default function SignupPage() {
   const router = useRouter()
@@ -73,7 +74,18 @@ export default function SignupPage() {
             REQUEST ACCESS
           </CardTitle>
           <CardDescription>
-            Create an Intel Desk account
+            <span className="flex flex-col items-center gap-1">
+              <span>Create an Intel Desk account</span>
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-intel-muted hover:text-intel-accent transition-colors text-xs mt-1"
+              >
+                <Github className="h-3.5 w-3.5" />
+                <span>v{APP_VERSION}</span>
+              </a>
+            </span>
           </CardDescription>
         </CardHeader>
         <CardContent>
