@@ -1,6 +1,6 @@
 'use client'
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query'
 import { ThemeProvider } from 'next-themes'
 import { useState, useEffect, useMemo } from 'react'
 import { createClient } from '@/lib/supabase/client'
@@ -98,17 +98,42 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   return <>{children}</>
 }
 
+function debounce<T extends (...args: unknown[]) => void>(fn: T, ms: number): T {
+  let timeout: ReturnType<typeof setTimeout>
+  return ((...args: unknown[]) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => fn(...args), ms)
+  }) as T
+}
+
 function RealtimeProvider({ children }: { children: React.ReactNode }) {
   const supabase = useMemo(() => createClient(), [])
+  const queryClient = useQueryClient()
   const user = useAuthStore((state) => state.user)
   const incrementUnreadAlerts = useUIStore((state) => state.incrementUnreadAlerts)
+
+  const invalidateClusters = useMemo(
+    () => debounce(() => queryClient.invalidateQueries({ queryKey: ['clusters'] }), 500),
+    [queryClient]
+  )
+  const invalidateArticles = useMemo(
+    () =>
+      debounce(() => {
+        queryClient.invalidateQueries({ queryKey: ['articles'] })
+        queryClient.invalidateQueries({ queryKey: ['news-ticker'] })
+      }, 500),
+    [queryClient]
+  )
+  const invalidateBriefings = useMemo(
+    () => debounce(() => queryClient.invalidateQueries({ queryKey: ['briefing'] }), 500),
+    [queryClient]
+  )
 
   useEffect(() => {
     if (!user) return
 
-    // Subscribe to alert events
     const channel = supabase
-      .channel('alert-events')
+      .channel('inteldesk-realtime')
       .on(
         'postgres_changes',
         {
@@ -117,16 +142,36 @@ function RealtimeProvider({ children }: { children: React.ReactNode }) {
           table: 'alert_events',
           filter: `user_id=eq.${user.id}`,
         },
-        () => {
-          incrementUnreadAlerts()
-        }
+        () => incrementUnreadAlerts()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'clusters' },
+        () => invalidateClusters()
+      )
+      .on(
+        'postgres_changes',
+        { event: 'INSERT', schema: 'public', table: 'articles' },
+        () => invalidateArticles()
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'briefings' },
+        () => invalidateBriefings()
       )
       .subscribe()
 
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, user, incrementUnreadAlerts])
+  }, [
+    supabase,
+    user,
+    incrementUnreadAlerts,
+    invalidateClusters,
+    invalidateArticles,
+    invalidateBriefings,
+  ])
 
   return <>{children}</>
 }
