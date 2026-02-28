@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" fill="#000000"/>
+  <rect x="8" y="8" width="48" height="48" stroke="#808080" stroke-width="1" fill="none"/>
+  <text x="32" y="38" font-family="IBM Plex Mono, monospace" font-size="20" font-weight="600" fill="#e0e0e0" text-anchor="middle">ID</text>
+</svg>
+

@@ -1,0 +1,46 @@
+# =============================================================================
+# Intel Desk - Local Development Docker Compose
+# =============================================================================
+#
+# SUPABASE NOTE:
+# Supabase is NOT included in this Docker Compose setup.
+# It runs locally via the Supabase CLI:
+#
+#   npx supabase start
+#
+# This spins up a full local Supabase stack (Postgres, Auth, Storage, etc.)
+# managed outside of Docker Compose. Make sure Supabase is running before
+# starting these services. The connection details are provided automatically
+# by `npx supabase status` and should be configured in your .env file.
+# =============================================================================
+
+version: "3.8"
+
+services:
+  # ---------------------------------------------------------------------------
+  # ML Cluster - Python Flask service for geopolitical risk analysis
+  # ---------------------------------------------------------------------------
+  ml-cluster:
+    build:
+      context: ./ml-cluster
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5001"
+    env_file:
+      - ./ml-cluster/.env
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Web - Next.js 14 frontend application
+  # ---------------------------------------------------------------------------
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - ml-cluster
+    restart: unless-stopped

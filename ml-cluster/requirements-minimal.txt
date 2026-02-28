@@ -1,0 +1,28 @@
+# Versión minimalista de requirements.txt para evitar conflictos
+# Instala primero estas dependencias base
+
+# Core
+python-dotenv>=1.0.0
+requests>=2.31.0
+
+# Flask
+flask>=3.0.0
+flask-cors>=4.0.0
+gunicorn>=21.2.0
+
+# Database
+supabase>=2.3.0
+psycopg2-binary>=2.9.9
+pgvector>=0.2.4
+
+# ML Base (instalar antes de sentence-transformers)
+numpy>=1.26.0
+scikit-learn>=1.3.0
+hdbscan>=0.8.33
+
+# ML Advanced (instalar después, puede tardar)
+torch>=2.0.0
+sentence-transformers>=2.2.2
+
+# OpenAI
+openai>=1.0.0
