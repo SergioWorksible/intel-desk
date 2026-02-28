@@ -5,8 +5,18 @@
   "license": "AGPL-3.0",
   "author": "Sergio Conejo",
   "description": "Geopolitical intelligence and market analysis platform with AI-powered clustering",
-  "repository": {"type": "git", "url": "https://github.com/sergiconejo/intel-desk.git"},
-  "keywords": ["geopolitics", "intelligence", "market-analysis", "ml-clustering", "supabase", "nextjs"],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sergiconejo/intel-desk.git"
+  },
+  "keywords": [
+    "geopolitics",
+    "intelligence",
+    "market-analysis",
+    "ml-clustering",
+    "supabase",
+    "nextjs"
+  ],
   "scripts": {
     "dev": "next dev",
     "dev:port": "next dev -p ${PORT:-3009}",
@@ -14,12 +24,15 @@
     "start": "next start -p ${PORT:-3009}",
     "start:port": "next start -p ${PORT:-3009}",
     "lint": "next lint",
-    
     "db:migrate": "supabase db push",
     "db:seed": "npx tsx scripts/seed.ts",
     "db:seed-map": "npx tsx scripts/seed-map.ts",
     "db:seed-geo": "npx tsx scripts/seed-geopolitical-data.ts",
-    "db:check": "npx tsx scripts/check-db.ts"
+    "db:check": "npx tsx scripts/check-db.ts",
+    "release": "release-it",
+    "release:patch": "release-it patch",
+    "release:minor": "release-it minor",
+    "release:major": "release-it major"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
@@ -89,6 +102,8 @@
     "zustand": "^4.5.0"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^10.0.5",
+    "@release-it/keep-a-changelog": "^7.0.1",
     "@types/crypto-js": "^4.2.2",
     "@types/dompurify": "^3.0.5",
     "@types/html-to-text": "^9.0.4",
@@ -102,6 +117,7 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "14.1.0",
     "postcss": "^8.4.33",
+    "release-it": "^19.2.4",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.7.0",
     "typescript": "^5.3.3"
