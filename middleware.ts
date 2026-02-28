@@ -74,9 +74,9 @@ export async function middleware(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/login', '/signup', '/auth/callback', '/auth/confirm']
+  const publicRoutes = ['/login', '/signup', '/auth/callback', '/auth/confirm', '/']
   const isPublicRoute = publicRoutes.some(route => 
-    pathname.startsWith(route)
+    pathname === route || (route !== '/' && pathname.startsWith(route))
   )
 
   // API routes that need special handling
@@ -94,6 +94,11 @@ export async function middleware(request: NextRequest) {
     }
     
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  // Redirect authenticated users from landing to dashboard
+  if (user && pathname === '/') {
+    return NextResponse.redirect(new URL('/overview', request.url))
   }
 
   // Redirect to login if not authenticated and not on public route
